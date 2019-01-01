@@ -252,3 +252,33 @@ jobs:
     inputs:
       pathtoPublish: $(Build.ArtifactStagingDirectory)
       artifactName: Library_Flit_Wheel
+
+- job: 'install_library'
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  strategy:
+    matrix:
+      Python36:
+        python.version: '3.6'
+      Python37:
+        python.version: '3.7'
+    maxParallel: 2
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+      architecture: 'x64'
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      buildType: 'current'
+      downloadType: 'single'
+      artifactName: 'Library_Flit_Wheel'
+      itemPattern: '*.whl'
+      downloadPath: '$(System.ArtifactsDirectory)' 
+  - script: |
+      python -m pip install --upgrade pip
+      pip install $(System.ArtifactsDirectory)/*.whl
+    displayName: 'Install package'
+      

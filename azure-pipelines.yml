@@ -206,6 +206,7 @@ jobs:
       cd library-flit
       flit install
     displayName: 'Install dependencies'
+  
   - script: |
       cd library-flit
       python -m pytest tests/ --junitxml=../reports/library-flit.xml --cov=demolib
@@ -216,6 +217,11 @@ jobs:
   
   - script: pydocstyle --ignore=D301,D212,D203 library-flit/demolib
     displayName: 'pydocstyle'
+
+ - script: |
+      cd library-flit
+      flit build
+    displayName: 'Build wheel'
 
   - task: PublishTestResults@2
     inputs:

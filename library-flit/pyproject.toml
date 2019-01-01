@@ -1,0 +1,15 @@
+[build-system]
+requires = [
+    "flit",
+]
+build-backend = "flit.buildapi"
+
+[tool.flit.metadata]
+module = "demolib"
+author = "Anthony Shaw"
+author-email = "anthonyshaw@apache.org"
+home-page = "https://github.com/tonybaloney/azure-pipelines-python-examples"
+classifiers = ["License :: OSI Approved :: MIT"]
+requires = []
+requires-python = ">=3.6"
+description-file = "README.md"

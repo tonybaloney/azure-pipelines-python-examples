@@ -3,7 +3,7 @@ trigger:
 
 jobs:
 
-- job: 'django-basic'
+- job: 'django_basic'
   pool:
     vmImage: 'Ubuntu-16.04'
   strategy:

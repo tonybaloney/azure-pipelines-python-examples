@@ -109,3 +109,38 @@ jobs:
       testResultsFiles: 'reports/flask-basic.xml'
       testRunTitle: 'Python $(python.version)'
     condition: succeededOrFailed()
+
+- job: 'flask_basic_with_coverage'
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  strategy:
+    matrix:
+      Python36:
+        python.version: '3.6'
+      Python37:
+        python.version: '3.7'
+    maxParallel: 2
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+      architecture: 'x64'
+
+  - script: |
+      python -m pip install --upgrade pip
+      cd flask-basic
+      pip install '.[test]'
+    displayName: 'Install dependencies'
+
+  - script: |
+      pip install pytest
+      coverage run pytest --junitxml=../../reports/flask-basic-coverage.xml
+      coverage report
+    displayName: 'Run tests and coverage'
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: 'reports/flask-basic-coverage.xml'
+      testRunTitle: 'Python $(python.version)'
+    condition: succeededOrFailed()

@@ -276,7 +276,7 @@ jobs:
       buildType: 'current'
       downloadType: 'single'
       artifactName: 'Library_Flit_Wheel'
-      itemPattern: '**/*.whl'
+      itemPattern: '**'
       downloadPath: '$(System.ArtifactsDirectory)' 
   - script: |
       python -m pip install --upgrade pip

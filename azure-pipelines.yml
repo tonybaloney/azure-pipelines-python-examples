@@ -1,6 +1,6 @@
 trigger:
 - master
-
+name: $(Date:yyyyMMdd)$(Rev:.r)
 jobs:
 
 - job: 'django_basic'
@@ -234,7 +234,7 @@ jobs:
 
   - script: |
       cd library-flit
-      cat demolib/__init__.py | sed 's/.dev/.dev$(Build.BuildNumber)/g' > demolib/__init__.py
+      sed 's/.dev/.dev$(Build.BuildNumber)/g' demolib/__init__.py
       flit build
     displayName: 'Build wheel'
 

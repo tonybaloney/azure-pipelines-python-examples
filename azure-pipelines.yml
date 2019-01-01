@@ -182,7 +182,7 @@ jobs:
       testRunTitle: '$(Agent.OS) - $(Build.BuildNumber)[$(Agent.JobName)] - Python $(python.version)'
     condition: succeededOrFailed()
 
-- script: |
+  - script: |
       cd library-basic
       python setup.py sdist bdist_wheel
     displayName: 'Run tests'

@@ -101,7 +101,8 @@ jobs:
 
   - script: |
       pip install pytest
-      pytest --junitxml=reports/flask-basic.xml
+      cd flask-basic
+      pytest --junitxml=../reports/flask-basic.xml
     displayName: 'Run tests'
 
   - task: PublishTestResults@2
@@ -135,7 +136,8 @@ jobs:
 
   - script: |
       pip install pytest coverage
-      coverage run -m pytest --junitxml=reports/flask-basic-coverage.xml
+      cd flask-basic
+      coverage run -m pytest --junitxml=../reports/flask-basic-coverage.xml
       coverage report
     displayName: 'Run tests and coverage'
 
@@ -164,13 +166,12 @@ jobs:
 
   - script: |
       python -m pip install --upgrade pip
-      cd library-basic
-      pip install -r requirements.txt
+      pip install -r library-basic/requirements.txt
     displayName: 'Install dependencies'
 
   - script: |
-      pip install pytest
-      pytest --junitxml=reports/library-basic.xml
+      cd library-basic
+      pytest --junitxml=../reports/library-basic.xml
     displayName: 'Run tests'
 
   - task: PublishTestResults@2

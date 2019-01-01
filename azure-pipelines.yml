@@ -34,7 +34,7 @@ jobs:
   - task: PublishTestResults@2
     inputs:
       testResultsFiles: 'reports/django-basic.xml'
-      testRunTitle: 'Python $(python.version)'
+      testRunTitle: '$(Agent.OS) - $(Build.DefinitionName) - Python $(python.version)'
     condition: succeededOrFailed()
 
 - job: 'django_multi_environment'
@@ -73,7 +73,7 @@ jobs:
   - task: PublishTestResults@2
     inputs:
       testResultsFiles: 'reports/django-multi-environment.xml'
-      testRunTitle: 'Python $(python.version) + Django $(django.version)'
+      testRunTitle: '$(Agent.OS) - $(Build.DefinitionName) - Python $(python.version) - Django $(django.version)'
     condition: succeededOrFailed()
 
 - job: 'flask_basic'
@@ -107,7 +107,7 @@ jobs:
   - task: PublishTestResults@2
     inputs:
       testResultsFiles: 'reports/flask-basic.xml'
-      testRunTitle: 'Python $(python.version)'
+      testRunTitle: '$(Agent.OS) - $(Build.DefinitionName) - Python $(python.version)'
     condition: succeededOrFailed()
 
 - job: 'flask_basic_with_coverage'
@@ -142,5 +142,39 @@ jobs:
   - task: PublishTestResults@2
     inputs:
       testResultsFiles: 'reports/flask-basic-coverage.xml'
-      testRunTitle: 'Python $(python.version)'
+      testRunTitle: '$(Agent.OS) - $(Build.DefinitionName) - Python $(python.version)'
+    condition: succeededOrFailed()
+
+- job: 'library_basic'
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  strategy:
+    matrix:
+      Python36:
+        python.version: '3.6'
+      Python37:
+        python.version: '3.7'
+    maxParallel: 2
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+      architecture: 'x64'
+
+  - script: |
+      python -m pip install --upgrade pip
+      cd library-basic
+      pip install -r requirements.txt
+    displayName: 'Install dependencies'
+
+  - script: |
+      pip install pytest
+      pytest --junitxml=reports/library-basic.xml
+    displayName: 'Run tests'
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: 'reports/library-basic.xml'
+      testRunTitle: '$(Agent.OS) - $(Build.DefinitionName) - Python $(python.version)'
     condition: succeededOrFailed()

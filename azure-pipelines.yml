@@ -195,7 +195,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: $(Build.ArtifactStagingDirectory)
-      artifactName: MyBuildOutputs
+      artifactName: Library_Basic_Wheel
 
 - job: 'library_flit'
   pool:

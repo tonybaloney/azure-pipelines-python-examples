@@ -9,7 +9,7 @@ module = "demolib"
 author = "Anthony Shaw"
 author-email = "anthonyshaw@apache.org"
 home-page = "https://github.com/tonybaloney/azure-pipelines-python-examples"
-classifiers = ["License :: OSI Approved :: MIT"]
+classifiers = ["License :: OSI Approved :: MIT License"]
 requires = []
 requires-python = ">=3.6"
 description-file = "README.md"

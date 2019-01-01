@@ -101,7 +101,7 @@ jobs:
 
   - script: |
       pip install pytest
-      pytest --junitxml=../reports/flask-basic.xml
+      pytest --junitxml=reports/flask-basic.xml
     displayName: 'Run tests'
 
   - task: PublishTestResults@2
@@ -135,7 +135,7 @@ jobs:
 
   - script: |
       pip install pytest coverage
-      coverage run -m pytest --junitxml=../reports/flask-basic-coverage.xml
+      coverage run -m pytest --junitxml=reports/flask-basic-coverage.xml
       coverage report
     displayName: 'Run tests and coverage'
 

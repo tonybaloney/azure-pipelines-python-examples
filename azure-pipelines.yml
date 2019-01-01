@@ -182,6 +182,20 @@ jobs:
       testRunTitle: '$(Agent.OS) - $(Build.BuildNumber)[$(Agent.JobName)] - Python $(python.version)'
     condition: succeededOrFailed()
 
+- script: |
+      cd library-basic
+      python setup.py sdist bdist_wheel
+    displayName: 'Run tests'
+
+  - task: CopyFiles@2
+    inputs:
+      contents: dist\**
+      targetFolder: $(Build.ArtifactStagingDirectory)
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: $(Build.ArtifactStagingDirectory)
+      artifactName: MyBuildOutputs
 
 - job: 'library_flit'
   pool:

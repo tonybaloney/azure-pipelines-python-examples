@@ -134,8 +134,8 @@ jobs:
     displayName: 'Install dependencies'
 
   - script: |
-      pip install pytest
-      coverage run pytest --junitxml=../reports/flask-basic-coverage.xml
+      pip install pytest coverage
+      coverage run -m pytest --junitxml=../reports/flask-basic-coverage.xml
       coverage report
     displayName: 'Run tests and coverage'
 

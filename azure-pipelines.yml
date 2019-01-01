@@ -189,7 +189,7 @@ jobs:
 
   - task: CopyFiles@2
     inputs:
-      contents: dist\**
+      contents: library-basic/dist/**
       targetFolder: $(Build.ArtifactStagingDirectory)
 
   - task: PublishBuildArtifacts@1
@@ -245,10 +245,10 @@ jobs:
   
   - task: CopyFiles@2
     inputs:
-      contents: _buildOutput\**
+      contents: library-flit/dist/**
       targetFolder: $(Build.ArtifactStagingDirectory)
 
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: $(Build.ArtifactStagingDirectory)
-      artifactName: MyBuildOutputs
+      artifactName: Library_Flit_Wheel

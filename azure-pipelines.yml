@@ -281,5 +281,5 @@ jobs:
       downloadPath: '$(System.ArtifactsDirectory)' 
   - script: |
       python -m pip install --upgrade pip
-      find $(System.ArtifactsDirectory)/library-flit/dist/*.whl | xargs pip install
+      find $(System.ArtifactsDirectory)/Library_Flit_Wheel/library-flit/dist/*.whl | xargs pip install
     displayName: 'Install package'

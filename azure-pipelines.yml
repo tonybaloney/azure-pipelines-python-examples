@@ -34,7 +34,7 @@ jobs:
   - task: PublishTestResults@2
     inputs:
       testResultsFiles: 'reports/django-basic.xml'
-      testRunTitle: '$(Agent.OS) - $(Agent.JobName) - Python $(python.version)'
+      testRunTitle: '$(Agent.OS) - $(Build.BuildNumber)[$(Agent.JobName)] - Python $(python.version)'
     condition: succeededOrFailed()
 
 - job: 'django_multi_environment'
@@ -73,7 +73,7 @@ jobs:
   - task: PublishTestResults@2
     inputs:
       testResultsFiles: 'reports/django-multi-environment.xml'
-      testRunTitle: '$(Agent.OS) - $(Agent.JobName) - Python $(python.version) - Django $(django.version)'
+      testRunTitle: '$(Agent.OS) - $(Build.BuildNumber)[$(Agent.JobName)] - Python $(python.version) - Django $(django.version)'
     condition: succeededOrFailed()
 
 - job: 'flask_basic'
@@ -108,7 +108,7 @@ jobs:
   - task: PublishTestResults@2
     inputs:
       testResultsFiles: 'reports/flask-basic.xml'
-      testRunTitle: '$(Agent.OS) - $(Agent.JobName) - Python $(python.version)'
+      testRunTitle: '$(Agent.OS) - $(Build.BuildNumber)[$(Agent.JobName)] - Python $(python.version)'
     condition: succeededOrFailed()
 
 - job: 'flask_basic_with_coverage'
@@ -144,7 +144,7 @@ jobs:
   - task: PublishTestResults@2
     inputs:
       testResultsFiles: 'reports/flask-basic-coverage.xml'
-      testRunTitle: '$(Agent.OS) - $(Agent.JobName) - Python $(python.version)'
+      testRunTitle: '$(Agent.OS) - $(Build.BuildNumber)[$(Agent.JobName)] - Python $(python.version)'
     condition: succeededOrFailed()
 
 - job: 'library_basic'
@@ -179,5 +179,5 @@ jobs:
   - task: PublishTestResults@2
     inputs:
       testResultsFiles: 'reports/library-basic.xml'
-      testRunTitle: '$(Agent.OS) - $(Agent.JobName) - Python $(python.version)'
+      testRunTitle: '$(Agent.OS) - $(Build.BuildNumber)[$(Agent.JobName)] - Python $(python.version)'
     condition: succeededOrFailed()

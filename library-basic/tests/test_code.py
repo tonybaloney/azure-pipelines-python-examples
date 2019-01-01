@@ -4,6 +4,6 @@ from demolib import code
 
 
 class ExampleTestCase(TestCase):
-    def test_example():
+    def test_example(self):
         ret = code.example()
         assert ret == "banana!"

@@ -181,3 +181,44 @@ jobs:
       testResultsFiles: 'reports/library-basic.xml'
       testRunTitle: '$(Agent.OS) - $(Build.BuildNumber)[$(Agent.JobName)] - Python $(python.version)'
     condition: succeededOrFailed()
+
+
+- job: 'library_flit'
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  strategy:
+    matrix:
+      Python36:
+        python.version: '3.6'
+      Python37:
+        python.version: '3.7'
+    maxParallel: 2
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+      architecture: 'x64'
+
+  - script: |
+      python -m pip install --upgrade pip
+      pip install pytest flit mock codecov pydocstyle pytest-cov
+      cd library-flit
+      flit install
+    displayName: 'Install dependencies'
+  - script: |
+      cd library-flit
+      python -m pytest tests/ --junitxml=../reports/library-flit.xml --cov=demolib
+      codecov
+    displayName: 'pytest'
+    env:
+      CODECOV_TOKEN: '<CODECOV.IO TOKEN'
+  
+  - script: pydocstyle --ignore=D301,D212,D203 library-flit/demolib
+    displayName: 'pydocstyle'
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: 'reports/library-flit.xml'
+      testRunTitle: '$(Agent.OS) - $(Build.BuildNumber)[$(Agent.JobName)] - Python $(python.version)'
+    condition: succeededOrFailed()

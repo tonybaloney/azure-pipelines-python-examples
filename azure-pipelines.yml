@@ -234,6 +234,7 @@ jobs:
 
   - script: |
       cd library-flit
+      cat demolib/__init__.py | sed 's/$build/$(Build.BuildNumber)/g' > demolib/__init__.py
       flit build
     displayName: 'Build wheel'
 

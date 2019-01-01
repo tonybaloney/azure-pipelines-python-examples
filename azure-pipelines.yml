@@ -254,6 +254,7 @@ jobs:
       artifactName: Library_Flit_Wheel
 
 - job: 'install_library'
+  dependsOn: 'library_flit'
   pool:
     vmImage: 'Ubuntu-16.04'
   strategy:

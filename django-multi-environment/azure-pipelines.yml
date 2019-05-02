@@ -1,0 +1,47 @@
+# To use this pipeline standalone, uncomment the `trigger`
+# and `name` stanzas. As-is, the pipeline is suitable for
+# importing as a template
+#
+# trigger:
+# - master
+# name: $(Date:yyyyMMdd)$(Rev:.r)
+jobs:
+
+- job: 'django_multi_environment'
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  strategy:
+    matrix:
+      Python36_Django213:
+        python.version: '3.6'
+        django.version: '2.1.3'
+      Python37_Django213:
+        python.version: '3.7'
+        django.version: '2.1.3'
+      Python37_Django214:
+        python.version: '3.7'
+        django.version: '2.1.4'
+    maxParallel: 3
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+      architecture: 'x64'
+
+  - script: |
+      python -m pip install --upgrade pip
+      pip install django==$(django.version)
+    displayName: 'Install dependencies'
+
+  - script: |
+      pip install pytest-django
+      cd django-multi-environment/azuredemo
+      pytest --junitxml=../../reports/django-multi-environment.xml
+    displayName: 'Run tests'
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: 'reports/django-multi-environment.xml'
+      testRunTitle: '$(Agent.OS) - $(Build.BuildNumber)[$(Agent.JobName)] - Python $(python.version) - Django $(django.version)'
+    condition: succeededOrFailed()

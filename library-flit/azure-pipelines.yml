@@ -1,0 +1,95 @@
+# To use this pipeline standalone, uncomment the `trigger`
+# and `name` stanzas. As-is, the pipeline is suitable for
+# importing as a template
+#
+# trigger:
+# - master
+# name: $(Date:yyyyMMdd)$(Rev:.r)
+jobs:
+
+- job: 'library_flit'
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  strategy:
+    matrix:
+      Python36:
+        python.version: '3.6'
+      Python37:
+        python.version: '3.7'
+    maxParallel: 2
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+      architecture: 'x64'
+
+  - script: |
+      python -m pip install --upgrade pip
+      pip install pytest flit mock codecov pydocstyle pytest-cov
+      cd library-flit
+      flit install
+    displayName: 'Install dependencies'
+  
+  - script: |
+      cd library-flit
+      python -m pytest tests/ --junitxml=../reports/library-flit.xml --cov=demolib
+      codecov
+    displayName: 'pytest'
+    env:
+      CODECOV_TOKEN: '<CODECOV.IO TOKEN'
+  
+  - script: pydocstyle --ignore=D301,D212,D203 library-flit/demolib
+    displayName: 'pydocstyle'
+
+  - script: |
+      cd library-flit
+      sed 's/.dev/.dev$(Build.BuildNumber)/g' demolib/__init__.py
+      flit build
+    displayName: 'Build wheel'
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: 'reports/library-flit.xml'
+      testRunTitle: '$(Agent.OS) - $(Build.BuildNumber)[$(Agent.JobName)] - Python $(python.version)'
+    condition: succeededOrFailed()
+  
+  - task: CopyFiles@2
+    inputs:
+      contents: library-flit/dist/**
+      targetFolder: $(Build.ArtifactStagingDirectory)
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: $(Build.ArtifactStagingDirectory)
+      artifactName: Library_Flit_Wheel
+
+- job: 'install_library'
+  dependsOn: 'library_flit'
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  strategy:
+    matrix:
+      Python36:
+        python.version: '3.6'
+      Python37:
+        python.version: '3.7'
+    maxParallel: 2
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+      architecture: 'x64'
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      buildType: 'current'
+      downloadType: 'single'
+      artifactName: 'Library_Flit_Wheel'
+      itemPattern: '**'
+      downloadPath: '$(System.ArtifactsDirectory)' 
+  - script: |
+      python -m pip install --upgrade pip
+      find $(System.ArtifactsDirectory)/Library_Flit_Wheel/library-flit/dist/*.whl | xargs pip install
+    displayName: 'Install package'

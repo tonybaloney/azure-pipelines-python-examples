@@ -1,0 +1,79 @@
+# To use this pipeline standalone, uncomment the `trigger`
+# and `name` stanzas. As-is, the pipeline is suitable for
+# importing as a template
+#
+# trigger:
+# - master
+# name: $(Date:yyyyMMdd)$(Rev:.r)
+jobs:
+
+- job: 'flask_basic'
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  strategy:
+    matrix:
+      Python36:
+        python.version: '3.6'
+      Python37:
+        python.version: '3.7'
+    maxParallel: 2
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+      architecture: 'x64'
+
+  - script: |
+      python -m pip install --upgrade pip
+      cd flask-basic
+      pip install '.[test]'
+    displayName: 'Install dependencies'
+
+  - script: |
+      pip install pytest
+      cd flask-basic
+      pytest --junitxml=../reports/flask-basic.xml
+    displayName: 'Run tests'
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: 'reports/flask-basic.xml'
+      testRunTitle: '$(Agent.OS) - $(Build.BuildNumber)[$(Agent.JobName)] - Python $(python.version)'
+    condition: succeededOrFailed()
+
+- job: 'flask_basic_with_coverage'
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  strategy:
+    matrix:
+      Python36:
+        python.version: '3.6'
+      Python37:
+        python.version: '3.7'
+    maxParallel: 2
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+      architecture: 'x64'
+
+  - script: |
+      python -m pip install --upgrade pip
+      cd flask-basic
+      pip install '.[test]'
+    displayName: 'Install dependencies'
+
+  - script: |
+      pip install pytest coverage
+      cd flask-basic
+      coverage run -m pytest --junitxml=../reports/flask-basic-coverage.xml
+      coverage report
+    displayName: 'Run tests and coverage'
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFiles: 'reports/flask-basic-coverage.xml'
+      testRunTitle: '$(Agent.OS) - $(Build.BuildNumber)[$(Agent.JobName)] - Python $(python.version)'
+    condition: succeededOrFailed()

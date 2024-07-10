@@ -1,3 +1,4 @@
 pytest
 wheel
 # other things you might need?
+zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
